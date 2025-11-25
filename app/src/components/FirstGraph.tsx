@@ -79,14 +79,24 @@ export default function FirstGraph() {
   if (loading) return <p>Chargement des données...</p>;
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year" />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey="count" fill="#8884d8" />
-      </LineChart>
-    </ResponsiveContainer>
+    <div style={{ width: "100%", height: 600 }}>
+      <h2 style={{ marginBottom: 20 }}>
+        Évolution du nombre de tournages par année
+      </h2>
+      <ResponsiveContainer width="100%" height={400}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="year" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="count"
+            stroke="#4B5122"
+            fill="#4B5122"
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

@@ -5,8 +5,10 @@ import ThirdGraph from "../components/ThirdGraph";
 
 export default function Analyse() {
   return (
-    <div>
+    <div className="bg-[#e8d6cc] min-h-screen">
+      <div>
       <Header />
+      <div className="flex gap-6 px-6 py-4">
       <FirstGraph />
       <SecondGraph />
       <ThirdGraph />
