@@ -17,13 +17,13 @@ export default function ThirdGraph() {
 
   // 🎨 Couleurs (5 types + Autres)
   const colors = [
-    "#4f46e5", // violet
-    "#0ea5e9", // bleu
-    "#16a34a", // vert
-    "#f59e0b", // orange
-    "#e11d48", // rose
-    "#64748b", // gris (Autres)
-  ];
+    "#6a7330", // vert olive série web
+    "#1a1b0d", // vert sapin série tv
+    "#bdaea3", // beige téléfilm
+    "#4f6138", // vert long métrage
+    "#97775a", // marron 
+    "#423b37", // taupe
+  ]; 
 
   // --- FETCH ---
   function fetchData() {
@@ -85,13 +85,18 @@ export default function ThirdGraph() {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
+      <h2 style={{ marginBottom: 20 }}>
+        Types de tournage x Année
+      </h2>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="annee" />
           <YAxis />
           <Tooltip />
-          <Legend />
+          <Legend
+          
+           />
 
           {categories.map((cat, index) => (
             <Area
@@ -101,6 +106,7 @@ export default function ThirdGraph() {
               stackId="1"
               stroke={colors[index % colors.length]}
               fill={colors[index % colors.length]}
+              
             />
           ))}
         </AreaChart>
