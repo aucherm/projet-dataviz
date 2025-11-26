@@ -1,6 +1,7 @@
 import FirstGraph from "../components/FirstGraph";
 import { Header } from "../components/Header";
 import ThirdGraph from "../components/ThirdGraph";
+import SecondGraph from "../components/SecondGraph";
 
 export default function Analyse() {
   return (
@@ -8,6 +9,7 @@ export default function Analyse() {
       <Header />
       <FirstGraph />
       <ThirdGraph />
+      <SecondGraph />
     </div>
   );
 }
