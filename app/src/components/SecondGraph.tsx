@@ -17,7 +17,10 @@ import {
   Legend,
 } from "recharts";
 
-import { BarChart, Bar, LabelList } from "recharts";
+import { 
+    BarChart, 
+    Bar, 
+    LabelList } from "recharts";
 
 //création d'une interface pour chaque objet du tableau que l'on va utiliser et décrire la forme des données
 interface ParisRecord {
@@ -41,7 +44,7 @@ interface ChartItem {
 
 // état du graphique où chartData stocke les données et setChartData les met à jour
 export default function SecondGraph() {
-  const [chartData, setChartData] = useState<ChartItem[]>([]);
+  const [chartData, setChartData] = useState<ChartItem[]>([]); 
 
   //récupération des données
   useEffect(() => {
