@@ -1,12 +1,3 @@
-/*
-1. Définir le type de données attendu
-2. Créer un état pour stocker les données
-3. Récupérer les tournages depuis l'API
-4. Compter et calculer le opurcentage par type
-5. Mettre à jour l'état
-6. Afficher le graphique à barres pour recharts
-*/
-
 import { useEffect, useState } from "react";
 import {
   XAxis,
@@ -17,10 +8,7 @@ import {
   Legend,
 } from "recharts";
 
-import { 
-    BarChart, 
-    Bar, 
-    LabelList } from "recharts";
+import { BarChart, Bar, LabelList } from "recharts";
 
 //création d'une interface pour chaque objet du tableau que l'on va utiliser et décrire la forme des données
 interface ParisRecord {
@@ -42,9 +30,8 @@ interface ChartItem {
   percent: number;
 }
 
-// état du graphique où chartData stocke les données et setChartData les met à jour
 export default function SecondGraph() {
-  const [chartData, setChartData] = useState<ChartItem[]>([]); 
+  const [chartData, setChartData] = useState<ChartItem[]>([]);
 
   //récupération des données
   useEffect(() => {
@@ -64,7 +51,6 @@ export default function SecondGraph() {
           counts[type] = (counts[type] || 0) + 1;
         });
 
-        // trie les types du plus fréuent au moins fréquent
         const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
         // met à jour chartData pour le graphique
@@ -85,7 +71,6 @@ export default function SecondGraph() {
     fetchData();
   }, []);
 
-  //affichage du graphique
   return (
     <div style={{ width: "100%", height: 600 }}>
       <h2 style={{ marginBottom: 20 }}>
@@ -107,7 +92,7 @@ export default function SecondGraph() {
             height={100}
           />
 
-          <YAxis />
+    <YAxis />
 
           <Tooltip />
           <Legend />
