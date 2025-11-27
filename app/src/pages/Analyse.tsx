@@ -8,17 +8,17 @@ export default function Analyse() {
   return (
     <div className="bg-[#e8d6cc] min-h-screen ">
       <Header />
-      <div className="grid gap-6 px-6 py-4">
-        <div className="bg-white p-4 rounded-xl shadow-md w-1/2">
+      <div className="grid grid-cols-2 gap-6 px-6 py-4">
+        <div className="bg-white p-4 rounded-xl shadow-md">
           <FirstGraph />
         </div>
-        <div className="bg-white p-4 rounded-xl shadow-md w-1/2">
+        <div className="bg-white p-4 rounded-xl shadow-md">
           <SecondGraph />
         </div>
-        <div className="bg-white p-4 rounded-xl shadow-md w-1/2">
+        <div className="bg-white p-4 rounded-xl shadow-md">
           <ThirdGraph />
         </div>
-        <div className="bg-white p-4 rounded-xl shadow-md w-1/2">
+        <div className="bg-white p-4 rounded-xl shadow-md">
           <TopRealisateursChart />
         </div>
       </div>
