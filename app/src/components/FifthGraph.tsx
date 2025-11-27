@@ -91,7 +91,7 @@ const TopRealisateursChart: React.FC = () => {
 
   return (
     <div className="w-full bg-white rounded-xl shadow p-4">
-      <h2 className="text-xl font-bold mb-4">
+     <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center"}}>
         Top réalisateurs / réalisatrices à Paris
       </h2>
 
