@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import {
-  LineChart,
+  AreaChart,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
-  Line,
+  Area,
 } from "recharts";
 
 interface Result {
@@ -79,14 +79,30 @@ export default function FirstGraph() {
   if (loading) return <p>Chargement des données...</p>;
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year" />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey="count" fill="#8884d8" />
-      </LineChart>
-    </ResponsiveContainer>
+    <div style={{ width: "100%", height: 600 }}>
+      <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center"}}>
+        Évolution du nombre de tournages par année
+      </h2>
+      <ResponsiveContainer width="100%" height={400}>
+        <AreaChart data={data}>
+        <defs>
+            <linearGradient id="myGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="50%" stopColor="#6A7330" />
+              <stop offset="100%" stopColor="#1A1B0D" />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="year" />
+          <YAxis />
+          <Tooltip />
+          <Area
+            type="monotone"
+            dataKey="count"
+            stroke="#1a1b0d"
+            fill="url(#myGradient)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

@@ -8,32 +8,32 @@
 */
 
 import { useEffect, useState } from "react";
-import { 
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    ResponsiveContainer,
-    Tooltip,
-    Legend
+import {
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
 } from "recharts";
 
-import { 
-    BarChart, 
-    Bar, 
-    LabelList } from "recharts";
+import { BarChart, Bar, LabelList } from "recharts";
 
 //création d'une interface pour chaque objet du tableau que l'on va utiliser et décrire la forme des données
-interface ParisRecord { // dans tableau records, on va chercher type_tournage qui se trouve dans fields (= record.fields.type_tournage)
+interface ParisRecord {
+  // dans tableau records, on va chercher type_tournage qui se trouve dans fields (= record.fields.type_tournage)
   fields: {
     type_tournage?: string;
   };
 }
 
-interface ApiResponse { // objet retourné par l'API avec la clé records
+interface ApiResponse {
+  // objet retourné par l'API avec la clé records
   records: ParisRecord[];
 }
 
-interface ChartItem { // format utilisé pour le graphique
+interface ChartItem {
+  // format utilisé pour le graphique
   type: string;
   count: number;
   percent: number;
@@ -41,9 +41,9 @@ interface ChartItem { // format utilisé pour le graphique
 
 // état du graphique où chartData stocke les données et setChartData les met à jour
 export default function SecondGraph() {
-  const [chartData, setChartData] = useState<ChartItem[]>([]); 
+  const [chartData, setChartData] = useState<ChartItem[]>([]);
 
- //récupération des données 
+  //récupération des données
   useEffect(() => {
     async function fetchData() {
       try {
@@ -53,10 +53,10 @@ export default function SecondGraph() {
         const data: ApiResponse = await res.json();
 
         // compte combien de fois chaque type de tournage apparaît
-        const counts: Record<string, number> = {}; 
+        const counts: Record<string, number> = {};
 
         // calcule le pourcentage de chaque type par rapport au total
-        data.records.forEach((rec) => { 
+        data.records.forEach((rec) => {
           const type = rec.fields.type_tournage || "Inconnu";
           counts[type] = (counts[type] || 0) + 1;
         });
@@ -64,7 +64,7 @@ export default function SecondGraph() {
         // trie les types du plus fréuent au moins fréquent
         const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
-        // met à jour chartData pour le graphique 
+        // met à jour chartData pour le graphique
         const formatted: ChartItem[] = Object.entries(counts)
           .map(([type, count]) => ({
             type,
@@ -85,22 +85,30 @@ export default function SecondGraph() {
   //affichage du graphique
   return (
     <div style={{ width: "100%", height: 600 }}>
-      <h2 style={{ marginBottom: 20 }}>Répartition des types de tournages à Paris</h2>
+      <h2 style={{ marginBottom: 20 }}>
+        Répartition des types de tournages à Paris
+      </h2>
 
       <ResponsiveContainer>
         <BarChart
           data={chartData}
           margin={{ top: 20, right: 30, left: 40, bottom: 80 }}
         >
+          <defs>
+            <linearGradient id="myGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="50%" stopColor="#6A7330" />
+              <stop offset="100%" stopColor="#1A1B0D" />
+            </linearGradient>
+          </defs>
+
           <CartesianGrid strokeDasharray="3 3" />
 
-        
-          <XAxis 
-            dataKey="type" 
-            angle={-45} 
-            textAnchor="end" 
-            interval={0} 
-            height={100} 
+          <XAxis
+            dataKey="type"
+            angle={-45}
+            textAnchor="end"
+            interval={0}
+            height={100}
           />
 
           <YAxis />
@@ -108,11 +116,8 @@ export default function SecondGraph() {
           <Tooltip />
           <Legend />
 
-
-          <Bar dataKey="count" fill="#8884d8">
-            <LabelList
-              position="top"
-            />
+          <Bar dataKey="count" fill="url(#myGradient)">
+            <LabelList position="top" />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
