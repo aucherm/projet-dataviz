@@ -11,7 +11,7 @@ interface YearCount {
 interface ChartItem {
   type: string;
   count: number;
-  percent: number;
+  percent?: number;
 }
 
 interface DirectorCount {
