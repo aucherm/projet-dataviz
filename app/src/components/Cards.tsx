@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SecondGraph from "./SecondGraph";
+import {SecondGraph} from "./SecondGraph";
 import FifthGraph from "./FifthGraph";
 import { FirstGraph } from "./FirstGraph";
 
