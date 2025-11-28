@@ -19,11 +19,11 @@ export default function Analyse() {
         <div className="bg-white p-4 rounded-xl shadow-md">
           <ThirdGraph />
         </div>
-        <div className="bg-white p-4 rounded-xl shadow-md w-1/3">
+        <div className="bg-white p-4 rounded-xl shadow-md">
           <FourthGraph />
-          <div className="bg-white p-4 rounded-xl shadow-md">
-            <TopRealisateursChart />
-          </div>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow-md">
+          <TopRealisateursChart />
         </div>
       </div>
     </div>
