@@ -58,7 +58,7 @@ function FetchFilming(): Promise<Result[]> {
     });
 }
 
-export default function FirstGraph() {
+export default function FirstGraph({ onData }: {onData?: (data:YearCount []) => void }) {
   const [data, setData] = useState<YearCount[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,6 +67,9 @@ export default function FirstGraph() {
       .then(function (results) {
         const chartData = countFilmingByYear(results);
         setData(chartData);
+        if (onData) {
+          onData(chartData);
+        }
       })
       .catch(function (error) {
         console.error("Erreur lors de la récupération des tournages:", error);

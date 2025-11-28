@@ -40,7 +40,11 @@ interface ChartItem {
 }
 
 // état du graphique où chartData stocke les données et setChartData les met à jour
-export default function SecondGraph() {
+export default function SecondGraph({
+  onData,
+}: {
+  onData?: (data: ChartItem[]) => void;
+}) {
   const [chartData, setChartData] = useState<ChartItem[]>([]);
 
   //récupération des données
@@ -74,8 +78,12 @@ export default function SecondGraph() {
           .sort((a, b) => b.count - a.count);
 
         setChartData(formatted);
+
+        // 🔥 envoi des données à Cards
+        if (onData) onData(formatted);
       } catch (e) {
         console.error("Erreur API:", e);
+      } finally {
       }
     }
 
@@ -85,7 +93,7 @@ export default function SecondGraph() {
   //affichage du graphique
   return (
     <div style={{ width: "100%", height: 600 }}>
-      <h2 style={{ marginBottom: 20 }}>
+      <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center"}}>
         Répartition des types de tournages à Paris
       </h2>
 

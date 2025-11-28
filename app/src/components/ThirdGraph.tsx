@@ -85,7 +85,7 @@ export default function ThirdGraph() {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <h2 style={{ marginBottom: 20 }}>
+      <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center"}}>
         Types de tournage x Année
       </h2>
       <ResponsiveContainer width="100%" height="100%">
