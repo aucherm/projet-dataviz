@@ -61,11 +61,15 @@ export function FourthGraph() {
     .sort((a, b) => b.count - a.count); // tri décroissant
 
   // Couleurs alternées
-  const colors = ["#4f46e5", "#7c3aed"];
+  const colors = ["#6A7330", "#1A1B0D"];
 
   return (
+    <div style={{ width: "100%", height: 600 }}>
+      <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center"}}>
+        Tournages par arrondissement
+      </h2>
     <ResponsiveContainer width="100%" height={400}>
-      <h2>Tournages par arrondissement</h2>
+      
 
       <BarChart
         width={900}
@@ -87,5 +91,6 @@ export function FourthGraph() {
         </Bar>
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 }
