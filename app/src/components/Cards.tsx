@@ -23,10 +23,9 @@ export function Cards() {
 
   // Calculer la moyenne et le total
   const totalTournages = graphData.reduce((sum, item) => sum + item.count, 0);
- 
+
   // Type de tournage le plus fréquent
-  const mostFrequentType =
-    typeData.length > 0 ? typeData[0].type : "N/A";
+  const mostFrequentType = typeData.length > 0 ? typeData[0].type : "N/A";
 
   return (
     <>
@@ -40,13 +39,12 @@ export function Cards() {
         <p className="bg-white rounded-lg px-4 py-5 w-72">
           <strong>Type de tournage le plus fréquent :</strong>
           <br />
-    {mostFrequentType}
+          {mostFrequentType}
         </p>
 
         <p className="bg-white rounded-lg px-4 py-5 w-72">
           <strong></strong>
           <br />
-          
         </p>
 
         <p className="bg-white rounded-lg px-4 py-5 w-72"></p>

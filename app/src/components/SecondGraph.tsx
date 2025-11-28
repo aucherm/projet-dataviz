@@ -52,7 +52,7 @@ export default function SecondGraph({
     async function fetchData() {
       try {
         const res = await fetch(
-          "https://opendata.paris.fr/api/records/1.0/search/?dataset=lieux-de-tournage-a-paris&rows=5000"
+          "https://opendata.paris.fr/api/records/1.0/search/?dataset=lieux-de-tournage-a-paris&rows=100"
         );
         const data: ApiResponse = await res.json();
 
@@ -93,7 +93,7 @@ export default function SecondGraph({
   //affichage du graphique
   return (
     <div style={{ width: "100%", height: 600 }}>
-      <h2 style={{ marginBottom: 20 }}>
+      <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center"}}>
         Répartition des types de tournages à Paris
       </h2>
 
