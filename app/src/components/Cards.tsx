@@ -39,7 +39,7 @@ export function Cards() {
 
   return (
     <>
-      <div className="flex gap-4 mt-8 mr-20 ml-20">
+      <div className="flex gap-4 mt-8 mr-20 ml-20 justify-center">
         <p className="bg-white rounded-lg px-4 py-5 w-72">
           <strong>Nombre total de tournages :</strong>
           <br />
