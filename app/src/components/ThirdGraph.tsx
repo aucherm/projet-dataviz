@@ -1,106 +1,104 @@
 import { useEffect, useState } from "react";
 import {
+  ResponsiveContainer,
   AreaChart,
-  Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
-  Legend,
-  ResponsiveContainer,
+  CartesianGrid,
+  Area,
 } from "recharts";
 
-export default function ThirdGraph() {
-  const [chartData, setChartData] = useState<any[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+interface Result {
+  annee_tournage: string;
+  type_tournage: string;
+}
 
-  // 🎨 Couleurs (5 types + Autres)
-  const colors = [
-    "#4f46e5", // violet
-    "#0ea5e9", // bleu
-    "#16a34a", // vert
-    "#f59e0b", // orange
-    "#e11d48", // rose
-    "#64748b", // gris (Autres)
-  ];
+interface apiResponse {
+  results: Result[];
+  count: number;
+}
 
-  // --- FETCH ---
-  function fetchData() {
-    fetch(
+const TOP_N_TYPES = 5;
+
+async function fetchApi(): Promise<apiResponse | undefined> {
+  try {
+    const api = await fetch(
       "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/lieux-de-tournage-a-paris/records?limit=100"
-    )
-      .then((r) => r.json())
-      .then((json) => prepareData(json.results))
-      .finally(() => setLoading(false));
+    );
+    return api.json();
+  } catch (error) {
+    console.error(error);
   }
+}
 
-  // --- TRANSFORMATION ---
-  function prepareData(results: any[]) {
-    const counts: Record<string, Record<string, number>> = {};
-    const typeTotals: Record<string, number> = {};
-
-    results.forEach((item) => {
-      const year = item.annee_tournage;
-      const type = item.type_tournage;
-
-      if (!year || !type) return;
-
-      if (!counts[year]) counts[year] = {};
-      counts[year][type] = (counts[year][type] || 0) + 1;
-
-      typeTotals[type] = (typeTotals[type] || 0) + 1;
-    });
-
-    // top 5
-    const topTypes = Object.entries(typeTotals)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([type]) => type);
-
-    const years = Object.keys(counts).sort();
-
-    const formatted = years.map((year) => {
-      const row: any = { annee: year };
-      let autres = 0;
-
-      Object.entries(counts[year]).forEach(([type, value]) => {
-        if (topTypes.includes(type)) row[type] = value;
-        else autres += value;
-      });
-
-      row["Autres"] = autres;
-      return row;
-    });
-
-    setCategories([...topTypes, "Autres"]);
-    setChartData(formatted);
-  }
+export function ThirdGraph() {
+  const [data, setData] = useState<any[]>([]);
+  const [types, setTypes] = useState<string[]>([]);
 
   useEffect(() => {
-    fetchData();
+    async function loadData() {
+      const res = await fetchApi();
+      if (!res) return;
+
+      // Compter le nombre de tournages par type global
+      const globalTypeCounts: Record<string, number> = {};
+      res.results.forEach((r) => {
+        const t = r.type_tournage || "Inconnu";
+        globalTypeCounts[t] = (globalTypeCounts[t] || 0) + 1;
+      });
+
+      // Identifier les top N types
+      const topTypes = Object.entries(globalTypeCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, TOP_N_TYPES)
+        .map(([type]) => type);
+
+      setTypes(topTypes);
+
+      // Regrouper par année et type
+      const yearlyCounts: Record<string, Record<string, number>> = {};
+
+      res.results.forEach((r) => {
+        const year = r.annee_tournage;
+        if (!yearlyCounts[year]) yearlyCounts[year] = {};
+        const typeKey = topTypes.includes(r.type_tournage) ? r.type_tournage : "Autres";
+        yearlyCounts[year][typeKey] = (yearlyCounts[year][typeKey] || 0) + 1;
+      });
+
+      // Transformer en tableau pour Recharts
+      const chartData = Object.entries(yearlyCounts)
+        .map(([year, counts]) => ({
+          year,
+          ...counts,
+        }))
+        .sort((a, b) => Number(a.year) - Number(b.year));
+
+      setData(chartData);
+    }
+
+    loadData();
   }, []);
 
-  if (loading) return <p>Chargement…</p>;
+  const colors = ["#6A7330", "#A3A84F", "#D1D27B", "#8B5E3C", "#C2854A", "#B0B0B0"]; // dernière couleur = Autres
 
   return (
-    <div style={{ width: "100%", height: "400px" }}>
+    <div style={{ width: "100%", height: 500 }}>
+      <h2 style={{ textAlign: "center", marginBottom: 20 }}>Types × Année</h2>
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData}>
+        <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="annee" />
+          <XAxis dataKey="year" />
           <YAxis />
           <Tooltip />
-          <Legend />
-
-          {categories.map((cat, index) => (
+          {types.concat("Autres").map((type, index) => (
             <Area
-              key={cat}
+              key={type}
               type="monotone"
-              dataKey={cat}
+              dataKey={type}
               stackId="1"
-              stroke={colors[index % colors.length]}
-              fill={colors[index % colors.length]}
+              stroke={colors[index]}
+              fill={colors[index]}
             />
           ))}
         </AreaChart>
