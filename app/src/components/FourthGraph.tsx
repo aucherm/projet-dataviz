@@ -61,7 +61,7 @@ export function FourthGraph() {
     .sort((a, b) => b.count - a.count); // tri décroissant
 
   // Couleurs alternées
-  const COLORS = ["#4f46e5", "#7c3aed"];
+  const colors = ["#4f46e5", "#7c3aed"];
 
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -81,7 +81,7 @@ export function FourthGraph() {
 
         <Bar dataKey="count">
           {chartData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
           <LabelList dataKey="count" position="top" />
         </Bar>
