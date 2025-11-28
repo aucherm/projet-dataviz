@@ -18,6 +18,7 @@ interface apiResponce {
   results: Results[];
 }
 
+
 async function fetchApi(): Promise<apiResponce | undefined> {
   try {
     const api = await fetch(
@@ -43,34 +44,39 @@ async function getFilmingByYear() {
   return counts;
 }
 
-export function FirstGraph() {
+interface FirstGraphProps {
+  onData?: (data: { year: string, count: number}[]) => void;
+}
+
+export function FirstGraph({onData}: FirstGraphProps) {
   const [data, setData] = useState<{ year: string; count: number }[]>([]);
 
   useEffect(() => {
     getFilmingByYear().then((counts) => {
       if (!counts) return;
 
-      // transformer en tableau compatible Recharts
       const formatted = Object.entries(counts).map(([year, count]) => ({
         year,
         count,
       }));
 
-      // trier par année croissante
       formatted.sort((a, b) => Number(a.year) - Number(b.year));
 
       setData(formatted);
+
+      if (onData) onData(formatted);
     });
-  }, []);
+  }, [onData]);
+
 
   return (
     <div style={{ width: "100%", height: 600 }}>
-      <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center"}}>
+      <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center" }}>
         Évolution du nombre de tournages par année
       </h2>
       <ResponsiveContainer width="100%" height={400}>
         <AreaChart data={data}>
-        <defs>
+          <defs>
             <linearGradient id="myGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="50%" stopColor="#6A7330" />
               <stop offset="100%" stopColor="#1A1B0D" />

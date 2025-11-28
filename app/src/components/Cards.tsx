@@ -63,6 +63,7 @@ export function Cards() {
 
       {/* 🔥 Les graphiques envoient leurs données via callbacks, on peut les cacher */}
       <div className="mt-10 hidden">
+      <FirstGraph onData={handleYearData} />
         <SecondGraph onData={handleTypeData} />
         <FifthGraph onData={handleDirectorData} />
       </div>
