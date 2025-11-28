@@ -1,96 +1,50 @@
-/*
-1. Définir le type de données attendu
-2. Créer un état pour stocker les données
-3. Récupérer les tournages depuis l'API
-4. Compter et calculer le opurcentage par type
-5. Mettre à jour l'état
-6. Afficher le graphique à barres pour recharts
-*/
-
 import { useEffect, useState } from "react";
-import {
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList } from "recharts";
 
-import { BarChart, Bar, LabelList } from "recharts";
-
-//création d'une interface pour chaque objet du tableau que l'on va utiliser et décrire la forme des données
-interface ParisRecord {
-  // dans tableau records, on va chercher type_tournage qui se trouve dans fields (= record.fields.type_tournage)
-  fields: {
-    type_tournage?: string;
-  };
+interface Result {
+  type_tournage: string;
 }
 
-interface ApiResponse {
-  // objet retourné par l'API avec la clé records
-  records: ParisRecord[];
-}
-
-interface ChartItem {
-  // format utilisé pour le graphique
-  type: string;
+interface apiResponce {
   count: number;
-  percent: number;
+  results: Result[];
 }
 
-// état du graphique où chartData stocke les données et setChartData les met à jour
-export default function SecondGraph({
-  onData,
-}: {
-  onData?: (data: ChartItem[]) => void;
-}) {
-  const [chartData, setChartData] = useState<ChartItem[]>([]);
+async function fetchApi(): Promise<apiResponce | undefined> {
+  try {
+    const api = await fetch(
+      "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/lieux-de-tournage-a-paris/records?limit=100"
+    );
+    return api.json();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-  //récupération des données
+async function getFilmingByType() {
+  const data = await fetchApi();
+  if (!data) return [];
+
+  const counts: Record<string, number> = {};
+
+  data.results.forEach((item) => {
+    const type = item.type_tournage || "Inconnu";
+    counts[type] = (counts[type] || 0) + 1;
+  });
+
+  // transformer en tableau pour Recharts
+  return Object.entries(counts).map(([type, count]) => ({ type, count }));
+}
+
+export function SecondGraph() {
+  const [data, setData] = useState<{ type: string; count: number }[]>([]);
+
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await fetch(
-          "https://opendata.paris.fr/api/records/1.0/search/?dataset=lieux-de-tournage-a-paris&rows=100"
-        );
-        const data: ApiResponse = await res.json();
-
-        // compte combien de fois chaque type de tournage apparaît
-        const counts: Record<string, number> = {};
-
-        // calcule le pourcentage de chaque type par rapport au total
-        data.records.forEach((rec) => {
-          const type = rec.fields.type_tournage || "Inconnu";
-          counts[type] = (counts[type] || 0) + 1;
-        });
-
-        // trie les types du plus fréuent au moins fréquent
-        const total = Object.values(counts).reduce((a, b) => a + b, 0);
-
-        // met à jour chartData pour le graphique
-        const formatted: ChartItem[] = Object.entries(counts)
-          .map(([type, count]) => ({
-            type,
-            count,
-            percent: Number(((count / total) * 100).toFixed(1)),
-          }))
-          .sort((a, b) => b.count - a.count);
-
-        setChartData(formatted);
-
-        // 🔥 envoi des données à Cards
-        if (onData) onData(formatted);
-      } catch (e) {
-        console.error("Erreur API:", e);
-      } finally {
-      }
-    }
-
-    fetchData();
+    getFilmingByType().then((res) => {
+      if (res) setData(res);
+    });
   }, []);
 
-  //affichage du graphique
   return (
     <div style={{ width: "100%", height: 600 }}>
       <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center"}}>
@@ -99,7 +53,7 @@ export default function SecondGraph({
 
       <ResponsiveContainer>
         <BarChart
-          data={chartData}
+          data={data}
           margin={{ top: 20, right: 30, left: 40, bottom: 80 }}
         >
           <defs>
