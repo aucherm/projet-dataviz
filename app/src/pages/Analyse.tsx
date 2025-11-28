@@ -1,4 +1,4 @@
-import FirstGraph from "../components/FirstGraph";
+import { FirstGraph } from "../components/FirstGraph";
 import { Header } from "../components/Header";
 import SecondGraph from "../components/SecondGraph";
 import ThirdGraph from "../components/ThirdGraph";
