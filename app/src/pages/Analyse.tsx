@@ -4,6 +4,7 @@ import SecondGraph from "../components/SecondGraph";
 import ThirdGraph from "../components/ThirdGraph";
 import { FourthGraph } from "../components/FourthGraph";
 import TopRealisateursChart from "../components/FifthGraph";
+import { Footer } from "../components/Footer";
 
 export default function Analyse() {
   return (
@@ -26,6 +27,7 @@ export default function Analyse() {
           <TopRealisateursChart />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
