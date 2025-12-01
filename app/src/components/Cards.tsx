@@ -29,11 +29,13 @@ export function Cards() {
   const handleTypeData = (data: ChartItem[]) => setTypeData(data);
   const handleDirectorData = (data: DirectorCount[]) => setDirectorData(data);
 
-  // calculer la moyenne et le total
+  // calculer total tournages
   const totalTournages = graphData.reduce((sum, item) => sum + item.count, 0);
   
   //type de tournage le plus fréquent
   const mostFrequentType = typeData.length > 0 ? typeData[0].type : "N/A";
+
+  // meilleur réalisateur
   const topDirector = directorData.length > 0 ? directorData[0].name : "N/A";
 
   return (
