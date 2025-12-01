@@ -1,92 +1,99 @@
 import { useEffect, useState } from "react";
 import {
-  LineChart,
+  CartesianGrid,
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  Line,
 } from "recharts";
 
-interface Result {
+interface Results {
   annee_tournage: string;
 }
 
-interface ApiResponse {
-  results: Result[];
-}
-
-interface YearCount {
-  year: string;
+interface apiResponce {
   count: number;
+  results: Results[];
 }
 
-function countFilmingByYear(results: Result[]): YearCount[] {
-  const counts: { [year: string]: number } = {};
 
-  for (const result of results) {
-    const year = result.annee_tournage;
-    if (year) {
-      counts[year] = (counts[year] || 0) + 1;
-    }
+async function fetchApi(): Promise<apiResponce | undefined> {
+  try {
+    const api = await fetch(
+      "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/lieux-de-tournage-a-paris/records?limit=100"
+    );
+    return api.json();
+  } catch (error) {
+    console.error(error);
   }
+}
 
-  const chartData: YearCount[] = [];
-  for (const year in counts) {
-    if (counts.hasOwnProperty(year)) {
-      chartData.push({ year, count: counts[year] });
-    }
-  }
+async function getFilmingByYear() {
+  const data = await fetchApi();
+  if (!data) return {};
 
-  chartData.sort(function (a, b) {
-    return Number(a.year) - Number(b.year);
+  const counts: Record<string, number> = {};
+
+  data.results.forEach((item) => {
+    const annee = item.annee_tournage;
+    counts[annee] = (counts[annee] || 0) + 1;
   });
 
-  return chartData;
+  return counts;
 }
 
-function FetchFilming(): Promise<Result[]> {
-  return fetch(
-    "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/lieux-de-tournage-a-paris/records?limit=100"
-  )
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (json: ApiResponse) {
-      return json.results;
+interface FirstGraphProps {
+  onData?: (data: { year: string, count: number}[]) => void;
+}
+
+export function FirstGraph({onData}: FirstGraphProps) {
+  const [data, setData] = useState<{ year: string; count: number }[]>([]);
+
+  useEffect(() => {
+    getFilmingByYear().then((counts) => {
+      if (!counts) return;
+
+      const formatted = Object.entries(counts).map(([year, count]) => ({
+        year,
+        count,
+      }));
+
+      formatted.sort((a, b) => Number(a.year) - Number(b.year));
+
+      setData(formatted);
+
+      if (onData) onData(formatted);
     });
-}
+  }, [onData]);
 
-export default function FirstGraph() {
-  const [data, setData] = useState<YearCount[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(function () {
-    FetchFilming()
-      .then(function (results) {
-        const chartData = countFilmingByYear(results);
-        setData(chartData);
-      })
-      .catch(function (error) {
-        console.error("Erreur lors de la récupération des tournages:", error);
-      })
-      .finally(function () {
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <p>Chargement des données...</p>;
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year" />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey="count" fill="#8884d8" />
-      </LineChart>
-    </ResponsiveContainer>
+    <div style={{ width: "100%", height: 600 }}>
+      <h2 style={{ marginBottom: 20, color: "#282b12", textAlign: "center" }}>
+        Évolution du nombre de tournages par année
+      </h2>
+      <ResponsiveContainer width="100%" height={400}>
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="myGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="50%" stopColor="#6A7330" />
+              <stop offset="100%" stopColor="#1A1B0D" />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="year" />
+          <YAxis />
+          <Tooltip />
+          <Area
+            type="monotone"
+            dataKey="count"
+            stroke="#1a1b0d"
+            fill="url(#myGradient)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
