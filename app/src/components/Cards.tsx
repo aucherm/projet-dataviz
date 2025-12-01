@@ -58,7 +58,6 @@ export function Cards() {
           {topDirector}
         </p>
 
-        <p className="bg-white rounded-lg px-4 py-5 w-72"></p>
       </div>
 
       {/* 🔥 Les graphiques envoient leurs données via callbacks, on peut les cacher */}
