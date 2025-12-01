@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  LabelList,
+} from "recharts";
 
 interface Result {
   type_tournage: string;
@@ -33,7 +43,15 @@ async function getFilmingByType() {
   });
 
   // transformer en tableau pour Recharts
-  return Object.entries(counts).map(([type, count]) => ({ type, count }));
+  const arrayData = Object.entries(counts).map(([type, count]) => ({
+    type,
+    count,
+  }));
+
+  // trier par count décroissant
+  arrayData.sort((a, b) => b.count - a.count);
+
+  return arrayData;
 }
 
 interface SecondGraphProps {
@@ -53,7 +71,9 @@ export function SecondGraph({ onData }: SecondGraphProps) {
   }, [onData]);
 
   return (
-    <div style={{ width: "100%", height: 500 }}> {/* Hauteur fixe */}
+    <div style={{ width: "100%", height: 500 }}>
+      {" "}
+      {/* Hauteur fixe */}
       <h2
         style={{
           marginBottom: 20,
@@ -63,8 +83,9 @@ export function SecondGraph({ onData }: SecondGraphProps) {
       >
         Répartition des types de tournages à Paris
       </h2>
-
-      <ResponsiveContainer width="100%" height={500}> {/* Hauteur fixe */}
+      <ResponsiveContainer width="100%" height={500}>
+        {" "}
+        {/* Hauteur fixe */}
         <BarChart
           data={data}
           margin={{ top: 20, right: 30, left: 40, bottom: 60 }} // bottom réduit pour XAxis incliné
