@@ -84,7 +84,7 @@ export function FourthGraph() {
         <Tooltip />
 
         <Bar dataKey="count">
-          {chartData.map((entry, index) => (
+          {chartData.map((_entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
           <LabelList dataKey="count" position="top" />
